@@ -1,6 +1,6 @@
 {
   "name": "@tecnet-systems-gmbh/biome-config",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared Biome config (formatter + linter) — the default lint/format standard.",
   "exports": {
     "./biome": "./biome.json"
