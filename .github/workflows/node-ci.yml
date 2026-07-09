@@ -49,9 +49,12 @@ jobs:
   backend:
     name: Backend (typecheck, lint, tests)
     runs-on: ubuntu-latest
+    # NOTE: the Postgres service is always defined — GitHub Actions rejects a conditional/empty
+    # `services.*.image`, so the `postgres` input can't gate the service block itself. An unused
+    # service is harmless for non-DB projects; a future refactor can split into with/without-DB jobs.
     services:
       postgres:
-        image: ${{ inputs.postgres && 'postgres:16' || '' }}
+        image: postgres:16
         env:
           POSTGRES_USER: ci
           POSTGRES_PASSWORD: ci
