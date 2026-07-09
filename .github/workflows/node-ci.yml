@@ -64,6 +64,9 @@ jobs:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history so a format-on-touch lint (`biome check --changed`) can diff against the base branch.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
