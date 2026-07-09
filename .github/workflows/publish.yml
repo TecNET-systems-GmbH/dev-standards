@@ -27,7 +27,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for pkg in eslint-config tsconfig prettier-config; do
+          for pkg in biome-config eslint-config tsconfig prettier-config; do
             echo "::group::publish @tecnet-systems-gmbh/$pkg"
             npm publish -w "@tecnet-systems-gmbh/$pkg" 2>&1 || echo "skip (already published or error above)"
             echo "::endgroup::"
