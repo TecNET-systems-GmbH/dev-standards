@@ -1,0 +1,86 @@
+name: Node CI (reusable)
+
+# Reusable pipeline for TypeScript/Node projects. A project references it from a tiny caller:
+#   jobs:
+#     ci:
+#       uses: TecNET-systems-GmbH/dev-standards/.github/workflows/node-ci.yml@v1
+#       with: { postgres: true, web-dir: web, db-setup: 'npm run db:ci' }
+#       secrets: inherit
+#
+# It runs the standard gates via the uniform npm scripts (check, lint, test). Project-specific DB setup
+# (migrate/seed) is passed as `db-setup`; a web workspace is built/tested when `web-dir` is set.
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        default: '22'
+      postgres:
+        description: Spin up a Postgres service and expose DATABASE_URL.
+        type: boolean
+        default: false
+      db-setup:
+        description: Command to prepare the DB (e.g. "npm run db:ci" → migrate deploy + seed). Runs only if set.
+        type: string
+        default: ''
+      web-dir:
+        description: Path to a web workspace to typecheck/test/build. Empty = no web job.
+        type: string
+        default: ''
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (typecheck, lint, tests)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: ${{ inputs.postgres && 'postgres:16' || '' }}
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+      - run: npm ci
+      - name: DB setup
+        if: inputs.db-setup != ''
+        run: ${{ inputs.db-setup }}
+      - name: Typecheck
+        run: npm run check
+      - name: Lint
+        run: npm run lint
+      - name: Tests
+        run: npm test
+
+  web:
+    name: Web (typecheck, tests, build)
+    if: inputs.web-dir != ''
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.web-dir }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.web-dir }}/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx vitest run
+      - run: npm run build
