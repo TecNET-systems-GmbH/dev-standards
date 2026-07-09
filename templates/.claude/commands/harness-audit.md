@@ -6,6 +6,26 @@ allowed-tools: Read, Glob, Grep, Bash
 You are auditing this repository's **testing & quality setup**. Do not change code. Produce a report and a
 prioritized, human-approvable action list. Base every claim on files you actually read — no guessing.
 
+## 0. Severity philosophy — separate defects from capabilities, calibrate by phase
+
+Every finding falls into one of two buckets; treat them very differently:
+
+- **Security correctness defects (code)** — wrong regardless of phase, scale, or whether data is real:
+  a secret with a silent insecure fallback, authorization not enforced (deny-by-default violated), trusting
+  client-supplied identity/roles, a missing auth check, unsanitized input / injection, committed secrets,
+  stack traces / internals leaked to clients. **Escalate these (P1) and recommend fixing now** — they are
+  cheap, phase-independent, and simply bugs.
+
+- **Compliance & operational capabilities (process)** — audit-logging depth, data retention /
+  right-to-erasure, PII-access logging, rate limiting, monitoring/alerting. These depend on **phase** and
+  usually need a **human/business decision** (e.g. erasure must respect outstanding payments and legal
+  retention — do NOT propose auto-building it). Present these as a **backlog of pre-production decisions**,
+  not as "fix now". Flag the ones needing a human decision, and **warn against premature abstraction** —
+  recommending a generic mechanism before the requirements are concrete is itself the boilerplate we avoid.
+
+**First establish the phase**: early dev with test data / pre-production / live with real (personal) data.
+A gap that is P1 in production may be backlog in early development. If it isn't obvious from the repo, ask.
+
 ## 1. Inventory (read the repo)
 
 - Detect the stack, test runner(s), and how tests are invoked (`package.json` scripts, config files).
@@ -49,8 +69,12 @@ things tooling cannot create — only detect the absence of. For each, report pr
   authorized + audit-logged access. Treat these as compliance obligations, not optional.
 
 Grep for evidence (middleware names, cookie options, rate-limit/helmet imports, audit-log calls on failure
-paths) rather than assuming. If personal data is present, escalate missing audit-logging / deletion concept
-to P1.
+paths) rather than assuming. Classify each finding per §0: **code defects** here (e.g. deny-by-default not
+enforced, a trusted client-supplied role header, a silent secret fallback, leaked internals) are P1 and
+fixed now. **Compliance/process items** (audit-logging depth, DSGVO retention/erasure, PII-access logging)
+are calibrated by phase: urgent only once the project is **live with real personal data**; in early dev with
+test data, record them as pre-production backlog with the human-decision caveat — do NOT mark them P1 or
+propose a speculative generic mechanism.
 
 ## 4. CI wiring
 
@@ -60,9 +84,14 @@ to P1.
 ## 5. Output
 
 Produce:
-1. A short **verdict** (1-2 sentences): is the test setup solid, adequate, or weak?
+1. A short **verdict** (1-2 sentences): is the test setup solid, adequate, or weak? State the detected phase.
 2. A **table**: category → present? → quality → recommendation.
-3. A **prioritized action list** (P1/P2/P3), each item concrete and small enough to become one ticket.
+3. A **prioritized action list**, each item concrete and small enough to become one ticket, split into:
+   - **Fix now** — security correctness defects + cheap test-coverage wins (§0 bucket 1).
+   - **Pre-production backlog** — compliance/operational capabilities (§0 bucket 2), each tagged
+     `needs human decision` where applicable, and with an explicit "don't build a generic mechanism yet"
+     note where the requirements aren't concrete.
 
-Then ask whether to turn the P1/P2 items into issues using the project's ticket template.
-**Propose the breakdown first — do not mass-create issues without approval** (avoid ticket spam).
+Then ask whether to turn the "fix now" items into issues using the project's ticket template.
+**Propose the breakdown first — do not mass-create issues without approval** (avoid ticket spam). For the
+backlog items, recommend tracking (deferred issues), not building.
