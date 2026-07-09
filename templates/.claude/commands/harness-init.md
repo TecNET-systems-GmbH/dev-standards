@@ -1,0 +1,60 @@
+---
+description: Adopt the TecNET dev-standards in this project — additively and without disrupting the codebase.
+allowed-tools: Read, Glob, Grep, Edit, Write, Bash
+---
+
+Set up the shared TecNET dev-standards in **this** repository. The guiding rule is **low disruption**:
+everything you add is additive and reversible; you do **not** reformat the existing codebase in bulk.
+
+Work through these steps, confirming anything ambiguous with the user:
+
+## 1. Detect before changing
+
+- Read `package.json`, existing lint/format/test config, CI, and any current `.claude/` setup.
+- If the project already uses ESLint/Prettier or has its own conventions, **report the overlap and ask**
+  before replacing anything. Do not rip out a working setup.
+
+## 2. Formatting & linting (Biome, format-on-touch)
+
+- Add `@biomejs/biome` as a devDependency and a `biome.json` that extends the shared config:
+  ```json
+  { "extends": ["@tecnet-systems-gmbh/biome-config/biome"],
+    "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true, "defaultBranch": "main" },
+    "files": { "includes": ["**", "!**/generated/**", "!**/dist/**"] } }
+  ```
+- Add scripts: `"format": "biome format --write"`, `"lint": "biome check"`, `"lint:fix": "biome check --write"`.
+- **Do NOT run `biome format --write .` across the whole repo.** The `.claude/` format-on-edit hook and
+  pre-commit will converge files gradually as they are touched. Mention `.git-blame-ignore-revs` as the
+  option if the team ever *chooses* a one-time full format later.
+
+## 3. Claude Code harness
+
+- Copy `.claude/settings.json`, `.claude/hooks/format-on-edit.mjs`, `.claude/hooks/block-generated.mjs`,
+  and the `.claude/commands/` from the dev-standards templates into this repo.
+- Create `.claude/protected-paths.json` listing **this** project's generated/build paths (e.g. Prisma output,
+  codegen dirs) so the block-generated hook guards the right files.
+
+## 4. CLAUDE.md
+
+- If absent, copy the template `CLAUDE.md` and fill the project-specific section (stack, how to run locally,
+  generated files, project-specific gates). If present, reconcile — don't clobber.
+
+## 5. CI & dependencies
+
+- Add a thin CI caller referencing the reusable workflow:
+  ```yaml
+  name: CI
+  on: pull_request
+  jobs:
+    ci:
+      uses: TecNET-systems-GmbH/dev-standards/.github/workflows/node-ci.yml@v1
+      with: { postgres: false, web-dir: '' }   # set per project
+      secrets: inherit
+  ```
+- Add the `dependabot.yml` template (adjust `directory` entries).
+
+## 6. Verify, don't assume
+
+- Run the local gates (`lint`, typecheck, tests) and report the result. Note anything that needs the user
+  (e.g. a `.npmrc` with a GitHub Packages token to install the private shared configs).
+- Summarize what you added and what still needs a human decision. Do not commit unless asked.

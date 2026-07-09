@@ -5,13 +5,19 @@ section (stack, modules, how to run locally). Agents AND humans read this.
 
 ## Gates — run before committing (uniform across all projects)
 
-- `npm run check` — `tsc --noEmit` (types). Must be clean.
-- `npm run lint` — ESLint (shared config).
-- `npm run format:check` — Prettier.
+- `npm run check` — `tsc --noEmit` (types). Must be clean. This is where type-safety lives.
+- `npm run lint` — Biome (`biome check`, shared config): format + lint in one pass.
 - `npm test` — tests. Categorized runs where available: `npm run test:api`, `test:web`, `test:security`.
 - Project-specific drift/generated guards (e.g. `npm run gen:prisma:check`) if present.
 
 CI runs these on every pull request and reports a status per gate.
+
+## Formatting — automatic, do not fight it
+
+Formatting is handled by the Biome **format-on-edit hook** (`.claude/hooks/format-on-edit.mjs`, wired in
+`.claude/settings.json`): every file you edit is auto-formatted + safe-fixed immediately. Don't hand-format.
+Adoption is **format-on-touch** — never run `biome format --write .` across the whole repo (it destroys
+`git blame` and floods diffs); the codebase converges as files are touched.
 
 ## Agent self-verification loop (important)
 
@@ -28,9 +34,10 @@ Do not consider work done until the gates (local + CI) are green.
 
 - **Language: English** for code, comments, commit messages, tickets, docs. **Domain vocabulary stays
   in the domain language** (UI labels, enum values, user-facing strings, domain nouns) — do not translate those.
-- **File length:** aim < 500 lines (`max-lines` warns at 500). Split rather than add new large files.
-- **Never edit generated files** (list them in the project section, e.g. `src/generated/**`). Edit the source + regenerate.
-- Match the surrounding style; formatting is enforced by Prettier (shared config) via the pre-commit hook.
+- **File length:** aim < 500 lines. Split rather than add new large files.
+- **Never edit generated files.** This is enforced by the `block-generated` PreToolUse hook; keep the
+  project's generated/build paths listed in `.claude/protected-paths.json`. Edit the source + regenerate.
+- Match the surrounding style; formatting is applied automatically by the Biome format-on-edit hook.
 
 ## Commits & branches
 
