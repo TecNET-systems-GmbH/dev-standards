@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "//": "Common strict options. Extend node.json (backend, NodeNext) or web.json (Vite/bundler).",
+  "compilerOptions": {
+    "target": "ES2022",
+    "strict": true,
+    "noUnusedLocals": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
+}

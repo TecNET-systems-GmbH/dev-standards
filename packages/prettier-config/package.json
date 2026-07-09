@@ -1,0 +1,12 @@
+{
+  "name": "@tecnet-systems-gmbh/prettier-config",
+  "version": "0.1.0",
+  "description": "Shared Prettier config.",
+  "main": "index.json",
+  "files": [
+    "index.json"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

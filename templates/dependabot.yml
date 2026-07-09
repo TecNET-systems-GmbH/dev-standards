@@ -1,0 +1,19 @@
+# Drop-in Dependabot template (tamed): monthly, grouped minor/patch, low PR cap.
+# Adjust the `directory` entries per project (e.g. add "/web" for a web workspace).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      minor-patch:
+        update-types: ["minor", "patch"]
+    labels: ["dependencies"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    labels: ["dependencies", "ci"]

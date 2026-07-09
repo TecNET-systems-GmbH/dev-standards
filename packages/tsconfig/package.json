@@ -1,0 +1,13 @@
+{
+  "name": "@tecnet-systems-gmbh/tsconfig",
+  "version": "0.1.0",
+  "description": "Shared strict TypeScript config bases (base/node/web).",
+  "files": [
+    "base.json",
+    "node.json",
+    "web.json"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
