@@ -1,0 +1,22 @@
+# Template — copy to `.gitignore` at the project root (named without the dot here so it
+# does not act as a real ignore file inside the templates/ folder).
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.next/
+coverage/
+
+# Secrets & local env — NEVER commit real secrets. Only `.env.example` (placeholders) is tracked.
+.env
+.env.*
+!.env.example
+
+# Logs & OS/editor cruft
+*.log
+.DS_Store
+.idea/
+*.tsbuildinfo

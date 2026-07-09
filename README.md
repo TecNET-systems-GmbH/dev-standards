@@ -12,8 +12,8 @@ One central definition, referenced by every project — see [`docs/plan.md`](doc
 | `packages/eslint-config` | `@tecnet-systems-gmbh/eslint-config` — shared ESLint 9 flat config. **Opt-in** for projects that need type-aware rules or a plugin Biome lacks; not the default. |
 | `packages/prettier-config` | `@tecnet-systems-gmbh/prettier-config` — shared Prettier config (pairs with the ESLint opt-in). |
 | `templates/.claude/` | Claude Code harness: `settings.json` (hooks), `hooks/` (format-on-edit + block-generated), `commands/` (`/harness-init`, `/harness-audit`). |
-| `templates/` | Drop-in templates: `CLAUDE.md` (agent conventions), `dependabot.yml`. |
-| `.github/workflows/node-ci.yml` | Reusable CI workflow (`workflow_call`) — projects reference it. |
+| `templates/` | Drop-in templates: `CLAUDE.md`, `dependabot.yml`, `gitignore`, `.env.example`, `.secretlintrc.json`, `env.ts` (boot-time env validation), `SECURITY-baseline.md`. |
+| `.github/workflows/node-ci.yml` | Reusable CI: secret scan (secretlint, blocking) + typecheck/lint/test + `npm audit` (advisory) + optional web job. |
 
 ## Philosophy: low disruption, integrates into existing projects
 
@@ -61,6 +61,8 @@ jobs:
 
 ## Status
 
-Phase 1. Config packages published to GitHub Packages (`tsconfig`, `eslint-config`, `prettier-config` at
-`0.1.0`; `biome-config` pending publish). Claude Code harness templates added. Next: publish `biome-config`,
-adopt in tecnet-v2 as the reference project, then the optional `@tecnet-systems-gmbh/harness` CLI.
+Phase 1. Config packages published to GitHub Packages (`biome-config`, `tsconfig`, `eslint-config`,
+`prettier-config` at `0.1.0`). Claude Code harness (hooks + `/harness-init`, `/harness-audit`), secret
+scanning, env-validation pattern, and the security baseline are in `templates/` + the reusable CI.
+Next: adopt in tecnet-v2 as the reference project; then optionally `knip` (dead code), `commitlint`
+(commit hygiene), and a thin `@tecnet-systems-gmbh/harness` CLI.

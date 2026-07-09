@@ -10,7 +10,16 @@ section (stack, modules, how to run locally). Agents AND humans read this.
 - `npm test` — tests. Categorized runs where available: `npm run test:api`, `test:web`, `test:security`.
 - Project-specific drift/generated guards (e.g. `npm run gen:prisma:check`) if present.
 
-CI runs these on every pull request and reports a status per gate.
+CI runs these on every pull request and reports a status per gate. CI also runs a **blocking secret scan**
+(secretlint) and an **advisory `npm audit`**.
+
+## Secrets & security
+
+- **Never commit secrets.** Real `.env` is gitignored; only `.env.example` (placeholders) is tracked.
+  Validate env at boot (`env.ts`). A leaked secret is compromised — rotate it.
+- Follow `SECURITY-baseline.md` — audit logging (incl. failed logins / authz denials), session
+  auto-logout + account lockout, rate limiting, deny-by-default authz, security headers, and (for personal
+  data) DSGVO retention/deletion. Run `/harness-audit` to check the project against it.
 
 ## Formatting — automatic, do not fight it
 

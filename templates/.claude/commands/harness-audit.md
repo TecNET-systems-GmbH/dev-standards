@@ -31,6 +31,27 @@ Assess whether each category exists and is warranted for **this** project — re
   regress often? If yes, recommend Playwright and name 2-3 concrete flows worth covering. If it's a
   backend/library with no meaningful UI, say E2E is **not** warranted and why. Do not cargo-cult it.
 
+## 3b. Security & compliance baseline (runtime controls, not just tests)
+
+Check the project against `SECURITY-baseline.md` (in the repo, or the dev-standards template). These are
+things tooling cannot create — only detect the absence of. For each, report present / partial / missing:
+
+- **Secrets**: real `.env` gitignored, `.env.example` tracked, env validated at boot, secret scanning wired.
+- **Auth/sessions**: idle auto-logout + absolute session lifetime, secure/httpOnly/sameSite cookies,
+  account lockout after repeated failed logins.
+- **Authorization**: deny-by-default, ownership/tenant checks.
+- **Audit logging**: mutations + admin actions logged, and **security events** (failed logins, authz
+  denials, exports) logged. Flag if only happy-path actions are logged.
+- **Resource limits**: rate limiting, max request body / upload size, pagination caps.
+- **HTTP hardening**: HTTPS/HSTS, security headers (helmet/CSP).
+- **Error hygiene**: no stack traces / internals leaked to clients.
+- **DSGVO/GDPR**: for personal data (names, salaries, IBANs, contact data) — retention/deletion concept,
+  authorized + audit-logged access. Treat these as compliance obligations, not optional.
+
+Grep for evidence (middleware names, cookie options, rate-limit/helmet imports, audit-log calls on failure
+paths) rather than assuming. If personal data is present, escalate missing audit-logging / deletion concept
+to P1.
+
 ## 4. CI wiring
 
 - Which of the above run in CI today? Recommend how to wire the missing-but-warranted ones, ideally as
