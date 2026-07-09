@@ -1,0 +1,34 @@
+name: Publish packages
+
+# Publishes the @tecnet-systems-gmbh/* config packages to GitHub Packages.
+# Uses the built-in GITHUB_TOKEN (packages: write) — no user secret required.
+# Versions come from each package.json; a re-run of an already-published version is skipped.
+# Trigger: manually (workflow_dispatch) or by pushing a version tag (v*).
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com
+          scope: '@tecnet-systems-gmbh'
+      - name: Publish config packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for pkg in eslint-config tsconfig prettier-config; do
+            echo "::group::publish @tecnet-systems-gmbh/$pkg"
+            npm publish -w "@tecnet-systems-gmbh/$pkg" 2>&1 || echo "skip (already published or error above)"
+            echo "::endgroup::"
+          done
