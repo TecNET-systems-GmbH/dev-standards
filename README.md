@@ -111,6 +111,10 @@ edits to generated/build files are blocked.
 
 ## Status
 
-Public. Config packages published to GitHub Packages. **tecnet-v2** is the reference adopter (Biome +
-harness + shared CI, green). Possible next steps: `knip` (dead-code), `commitlint` (commit hygiene), and a
-thin `@tecnet-systems-gmbh/harness` CLI to replace the copy-the-templates step with `npx harness init/update`.
+Public and in use. **tecnet-v2** is the reference adopter (Biome, harness, shared CI — green; on
+TypeScript 7 + Vite 8). Config packages are on GitHub Packages. See [`CHANGELOG.md`](CHANGELOG.md) for the
+state and versions.
+
+Deliberately **not** built (would be premature): `knip`, `commitlint`, and a `harness` CLI
+(`npx harness init/update`) to replace the copy-the-templates step. Revisit only if the copy-drift or the
+missing checks actually start to hurt.
