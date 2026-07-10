@@ -1,0 +1,4 @@
+# Template — copy to `.gitattributes` at the project root (named without the dot here).
+# Enforces LF for all text files so Windows checkouts don't introduce CRLF, which conflicts with
+# Biome's LF formatter and causes spurious local lint diffs.
+* text=auto eol=lf

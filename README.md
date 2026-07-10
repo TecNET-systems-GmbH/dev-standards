@@ -110,7 +110,7 @@ edits to generated/build files are blocked.
 | `packages/tsconfig` | `@tecnet-systems-gmbh/tsconfig` — strict TypeScript base. |
 | `packages/eslint-config`, `packages/prettier-config` | Opt-in, for projects needing type-aware ESLint rules Biome lacks. |
 | `templates/.claude/` | Hooks (`format-on-edit`, `block-generated`) + commands (`/harness-init`, `/harness-audit`). |
-| `templates/` | `CLAUDE.md`, `gitignore`, `.env.example`, `.secretlintrc.json`, `env.ts`, `SECURITY-baseline.md`, `dependabot.optin.yml` (opt-in). |
+| `templates/` | `CLAUDE.md`, `gitignore`, `gitattributes` (LF), `.env.example`, `.secretlintrc.json`, `env.ts`, `SECURITY-baseline.md`, `dependabot.optin.yml` (opt-in). |
 | `.github/workflows/node-ci.yml` | The reusable CI pipeline. |
 | [`docs/plan.md`](docs/plan.md) | The full concept & rationale. |
 

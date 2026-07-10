@@ -23,6 +23,8 @@ Work through these steps, confirming anything ambiguous with the user:
     "files": { "includes": ["**", "!**/generated/**", "!**/dist/**"] } }
   ```
 - Add scripts: `"format": "biome format --write"`, `"lint": "biome check"`, `"lint:fix": "biome check --write"`.
+- **Add `.gitattributes`** (copy `templates/gitattributes`): `* text=auto eol=lf` — so Windows checkouts
+  don't introduce CRLF, which conflicts with Biome's LF formatter and causes spurious local lint diffs.
 - **Existing project → do the one-time adoption baseline** (this is what keeps the harness from falling on
   your feet). As a SEPARATE first commit: run `npx biome check --write .` (format + safe fixes) across the
   repo, resolve any remaining errors, commit it as `style: Biome baseline`, and add that commit's SHA to a
