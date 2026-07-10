@@ -50,6 +50,11 @@ before touching anything that already exists.
 
 5. **Secret scan** — copy `templates/.secretlintrc.json`.
 
+6. **Existing project → one-time baseline** (skip for new/empty repos): as a separate `style: Biome baseline`
+   commit, run `npx biome check --write .`, resolve any errors, and add that commit's SHA to
+   `.git-blame-ignore-revs`. Without it, the first edit to a pre-Biome file causes a whole-file reformat
+   (blame-destroying) and CI lint failures. After the baseline, edits stay small and green. See `/harness-init`.
+
 > **Installing the shared config packages** (`@tecnet-systems-gmbh/*`) needs a one-time `.npmrc` — GitHub
 > Packages requires auth even for public packages:
 > ```

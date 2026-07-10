@@ -23,9 +23,15 @@ Work through these steps, confirming anything ambiguous with the user:
     "files": { "includes": ["**", "!**/generated/**", "!**/dist/**"] } }
   ```
 - Add scripts: `"format": "biome format --write"`, `"lint": "biome check"`, `"lint:fix": "biome check --write"`.
-- **Do NOT run `biome format --write .` across the whole repo.** The `.claude/` format-on-edit hook and
-  pre-commit will converge files gradually as they are touched. Mention `.git-blame-ignore-revs` as the
-  option if the team ever *chooses* a one-time full format later.
+- **Existing project → do the one-time adoption baseline** (this is what keeps the harness from falling on
+  your feet). As a SEPARATE first commit: run `npx biome check --write .` (format + safe fixes) across the
+  repo, resolve any remaining errors, commit it as `style: Biome baseline`, and add that commit's SHA to a
+  `.git-blame-ignore-revs` file so `git blame` skips it. **Why:** without the baseline, the *first* edit to
+  any pre-Biome file triggers a whole-file reformat (huge blame-destroying diff) and CI fails on the file's
+  pre-existing lint. After the baseline, format-on-touch keeps everything clean with small diffs.
+- **New/empty project**: skip the baseline — no legacy to format; the format-on-edit hook + pre-commit suffice.
+- The shared Biome config is tuned to a pragmatic policy (`noExplicitAny`/`noNonNullAssertion` off; noisy
+  React/style rules → warn), so an adopting project sees a handful of warnings, not hundreds of errors.
 
 ## 3. Claude Code harness
 
