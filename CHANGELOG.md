@@ -7,7 +7,7 @@ workflow and `templates/` are consumed at the `@v1` tag (a moving pointer to the
 
 | Package | Version | Notes |
 |---|---|---|
-| `@tecnet-systems-gmbh/biome-config` | 0.1.1 | Biome 2.5 `rules.preset` form. **Published: 0.1.0** — 0.1.1 not yet republished (consumers use inline config; no drift in practice). |
+| `@tecnet-systems-gmbh/biome-config` | 0.1.2 | Biome 2.5 `rules.preset` form; enforces file length as a warning (`noExcessiveLinesPerFile`, 500, non-blocking). |
 | `@tecnet-systems-gmbh/tsconfig` | 0.1.0 | Strict TS base. |
 | `@tecnet-systems-gmbh/eslint-config` | 0.1.0 | Opt-in (type-aware rules Biome lacks). |
 | `@tecnet-systems-gmbh/prettier-config` | 0.1.0 | Opt-in (pairs with ESLint). |

@@ -43,7 +43,8 @@ Do not consider work done until the gates (local + CI) are green.
 
 - **Language: English** for code, comments, commit messages, tickets, docs. **Domain vocabulary stays
   in the domain language** (UI labels, enum values, user-facing strings, domain nouns) — do not translate those.
-- **File length:** aim < 500 lines. Split rather than add new large files.
+- **File length:** aim < 500 lines — enforced as a non-blocking Biome warning
+  (`noExcessiveLinesPerFile`, 500, blank lines skipped). Split rather than add new large files.
 - **Never edit generated files.** This is enforced by the `block-generated` PreToolUse hook; keep the
   project's generated/build paths listed in `.claude/protected-paths.json`. Edit the source + regenerate.
 - Match the surrounding style; formatting is applied automatically by the Biome format-on-edit hook.

@@ -17,7 +17,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended"
+      "preset": "recommended",
+      "style": {
+        "noExcessiveLinesPerFile": {
+          "level": "warn",
+          "options": { "maxLines": 500, "skipBlankLines": true }
+        }
+      }
     }
   },
   "javascript": {
