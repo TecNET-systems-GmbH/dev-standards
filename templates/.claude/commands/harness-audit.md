@@ -26,6 +26,19 @@ Every finding falls into one of two buckets; treat them very differently:
 **First establish the phase**: early dev with test data / pre-production / live with real (personal) data.
 A gap that is P1 in production may be backlog in early development. If it isn't obvious from the repo, ask.
 
+## 0b. Deduplicate against what's already tracked — don't re-nag
+
+An audit is *visibility*, not a mandate, and it must not re-raise the same gaps every time it runs.
+
+- Before reporting, check what's **already tracked**: open/closed issues (especially a `deferred` or
+  `backlog` label — `gh issue list --state all --label deferred` if `gh` is available), plus any known-gaps
+  notes in the repo.
+- **Only surface**: (a) genuinely **new** findings, or (b) an already-tracked one whose **phase now makes it
+  actionable** (e.g. the project just went live with real data) — and then say *why it's now relevant*.
+- **Never re-recommend a consciously `deferred` finding** — treat it as a settled decision, not an open
+  question to re-litigate.
+- Run this audit **deliberately** (before a release, on a phase change, on request) — not every planning turn.
+
 ## 1. Inventory (read the repo)
 
 - Detect the stack, test runner(s), and how tests are invoked (`package.json` scripts, config files).
@@ -91,6 +104,9 @@ Produce:
    - **Pre-production backlog** — compliance/operational capabilities (§0 bucket 2), each tagged
      `needs human decision` where applicable, and with an explicit "don't build a generic mechanism yet"
      note where the requirements aren't concrete.
+
+Exclude anything already tracked (per §0b); if you re-surface a `deferred` item because its phase changed,
+say so explicitly. If nothing new is found, say so plainly — a short "no new findings" is a valid result.
 
 Then ask whether to turn the "fix now" items into issues using the project's ticket template.
 **Propose the breakdown first — do not mass-create issues without approval** (avoid ticket spam). For the
