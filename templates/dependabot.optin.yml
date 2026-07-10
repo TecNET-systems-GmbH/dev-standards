@@ -1,0 +1,25 @@
+# OPT-IN version-update config for Dependabot. NOT the default — do not add it unless a project
+# explicitly wants routine version-bump PRs (they generate a steady PR/email stream).
+#
+# Quiet default (recommended): enable Dependabot *security* updates via the repo setting only —
+# `gh api -X PUT repos/OWNER/REPO/automated-security-fixes` (or Settings → Code security →
+# Dependabot). That delivers vulnerability-fix PRs only, no routine bump noise.
+#
+# To opt into routine version bumps too, copy this file to `.github/dependabot.yml`.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      minor-patch:
+        update-types: ["minor", "patch"]
+    labels: ["dependencies"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    labels: ["dependencies", "ci"]

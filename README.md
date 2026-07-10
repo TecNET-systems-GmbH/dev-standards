@@ -93,6 +93,9 @@ edits to generated/build files are blocked.
   non-bypassable merge gate for the team.
 - **Audit with restraint.** `/harness-audit` deliberately separates code-level security defects (fix now,
   phase-independent) from compliance/process capabilities (decide before go-live; don't over-build early).
+- **Quiet by default.** CI runs on PRs only; Dependabot is **security-updates only** (enable via the repo
+  setting — no routine version-bump PR/email stream; opt into bumps with `templates/dependabot.optin.yml`).
+  Set GitHub → Notifications → Actions to "failed only". The daily loop stays low-noise on purpose.
 
 ## Reference
 
@@ -102,7 +105,7 @@ edits to generated/build files are blocked.
 | `packages/tsconfig` | `@tecnet-systems-gmbh/tsconfig` — strict TypeScript base. |
 | `packages/eslint-config`, `packages/prettier-config` | Opt-in, for projects needing type-aware ESLint rules Biome lacks. |
 | `templates/.claude/` | Hooks (`format-on-edit`, `block-generated`) + commands (`/harness-init`, `/harness-audit`). |
-| `templates/` | `CLAUDE.md`, `gitignore`, `.env.example`, `.secretlintrc.json`, `env.ts`, `SECURITY-baseline.md`, `dependabot.yml`. |
+| `templates/` | `CLAUDE.md`, `gitignore`, `.env.example`, `.secretlintrc.json`, `env.ts`, `SECURITY-baseline.md`, `dependabot.optin.yml` (opt-in). |
 | `.github/workflows/node-ci.yml` | The reusable CI pipeline. |
 | [`docs/plan.md`](docs/plan.md) | The full concept & rationale. |
 

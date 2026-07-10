@@ -51,7 +51,12 @@ Work through these steps, confirming anything ambiguous with the user:
       with: { postgres: false, web-dir: '' }   # set per project
       secrets: inherit
   ```
-- Add the `dependabot.yml` template (adjust `directory` entries).
+- **Dependencies — quiet by default:** enable Dependabot *security* updates only
+  (`gh api -X PUT repos/OWNER/REPO/automated-security-fixes`) — vulnerability fixes, no routine
+  bump-PR/email stream. Do **not** add a version-update `dependabot.yml` unless the user explicitly
+  wants routine bumps (then copy `templates/dependabot.optin.yml`).
+- Mention the one manual step: set GitHub → Settings → Notifications → Actions to "failed only" to
+  avoid green-run email noise.
 
 ## 6. Verify, don't assume
 
