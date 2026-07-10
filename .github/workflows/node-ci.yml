@@ -46,12 +46,41 @@ jobs:
       - name: Scan tracked files for secrets
         run: npx --yes --package secretlint --package @secretlint/secretlint-rule-preset-recommend -- secretlint "**/*"
 
+  # The backend gate runs as ONE of two mutually-exclusive jobs, chosen by the `postgres` input:
+  #   backend     → no database (postgres: false) — no Postgres container is started
+  #   backend-db  → with a Postgres service (postgres: true)
+  # GitHub Actions can't conditionally attach a `services` block to one job, hence the split.
+  # IMPORTANT: keep the steps of both jobs identical.
   backend:
     name: Backend (typecheck, lint, tests)
+    if: ${{ !inputs.postgres }}
     runs-on: ubuntu-latest
-    # NOTE: the Postgres service is always defined — GitHub Actions rejects a conditional/empty
-    # `services.*.image`, so the `postgres` input can't gate the service block itself. An unused
-    # service is harmless for non-DB projects; a future refactor can split into with/without-DB jobs.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so `biome check --changed` can diff against the base branch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+      - run: npm ci
+      - name: Audit dependencies (advisory)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+      - name: DB setup
+        if: inputs.db-setup != ''
+        run: ${{ inputs.db-setup }}
+      - name: Typecheck
+        run: npm run check
+      - name: Lint
+        run: npm run lint
+      - name: Tests
+        run: npm test
+
+  backend-db:
+    name: Backend (typecheck, lint, tests)
+    if: ${{ inputs.postgres }}
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:16
@@ -68,8 +97,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Full history so a format-on-touch lint (`biome check --changed`) can diff against the base branch.
-          fetch-depth: 0
+          fetch-depth: 0 # full history so `biome check --changed` can diff against the base branch
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
