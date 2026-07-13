@@ -18,7 +18,8 @@ workflow and `templates/` are consumed at the `@v1` tag (a moving pointer to the
 - **Claude Code harness** (`templates/.claude/`): hooks `format-on-edit` + `block-generated`; slash
   commands `/harness-init`, `/harness-audit`.
 - **Reusable CI** (`node-ci.yml`, public): secret scan (blocking) + typecheck + lint + tests + web build +
-  `npm audit` (advisory).
+  `npm audit` (advisory). The backend gate is two mutually-exclusive jobs (`postgres` on/off) with
+  distinct names — "Backend with DB" / "Backend without DB" — so the always-skipped twin reads clearly.
 - **Secret scanning** (secretlint), **fail-fast env** pattern (`env.ts`), **security baseline**
   (`SECURITY-baseline.md`) — with the audit's defects-now (🔧) vs capabilities-later (⏳) split.
 - **Quiet by default**: PR-only CI; Dependabot **security-updates only** (version bumps opt-in via
