@@ -50,9 +50,11 @@ jobs:
   #   backend     → no database (postgres: false) — no Postgres container is started
   #   backend-db  → with a Postgres service (postgres: true)
   # GitHub Actions can't conditionally attach a `services` block to one job, hence the split.
+  # The two carry DISTINCT display names ("without DB" / "with DB") so the always-skipped twin is
+  # self-explanatory in the checks list (identical names read as a confusing duplicate skip).
   # IMPORTANT: keep the steps of both jobs identical.
   backend:
-    name: Backend (typecheck, lint, tests)
+    name: Backend without DB (typecheck, lint, tests)
     if: ${{ !inputs.postgres }}
     runs-on: ubuntu-latest
     steps:
@@ -78,7 +80,7 @@ jobs:
         run: npm test
 
   backend-db:
-    name: Backend (typecheck, lint, tests)
+    name: Backend with DB (typecheck, lint, tests)
     if: ${{ inputs.postgres }}
     runs-on: ubuntu-latest
     services:
