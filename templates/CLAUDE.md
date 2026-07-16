@@ -21,6 +21,23 @@ CI runs these on every pull request and reports a status per gate. CI also runs 
   auto-logout + account lockout, rate limiting, deny-by-default authz, security headers, and (for personal
   data) DSGVO retention/deletion. Run `/harness-audit` to check the project against it.
 
+## Harness health — proactive maintenance (do this without being asked)
+
+Periodic maintenance checks are tracked in `.harness/status.json`, each with a cadence (`everyDays`). A
+`SessionStart` hook runs `scripts/harness-check.mjs --hook`, so at the start of each session any **overdue**
+check appears in your context. When something is overdue, **proactively offer to run it** — the developer
+is never blocked or forced. Map each check to its action:
+
+- `audit` → run **`/harness-audit`** (test structure + security baseline + CI + compliance).
+- `structure` → run the **`structure-review`** subagent (over-complexity, duplication, simpler shapes).
+- `cleanup` → run the **`cleanup`** subagent (dead code, duplicate helpers, unused deps).
+
+Each of those writes a short `.harness/<check>-report.md` and stamps the ledger itself; otherwise stamp
+manually: `node scripts/harness-check.mjs --record <check> "<short status>"`, then commit
+`.harness/status.json` (+ any report). `npm run harness:check` prints status anytime. Cadences are tunable
+per project (edit `everyDays`). Findings follow the `/harness-audit` discipline: dedup against tracked
+issues, don't re-nag, propose ticket breakdowns before mass-creating.
+
 ## Formatting — automatic, do not fight it
 
 Formatting is handled by the Biome **format-on-edit hook** (`.claude/hooks/format-on-edit.mjs`, wired in

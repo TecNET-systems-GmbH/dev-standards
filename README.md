@@ -8,8 +8,10 @@ referenced by every project. Additive, low-disruption, and Claude-Code-native (e
 - **Biome** — one fast tool for formatting **and** linting (shared config), instead of ESLint + Prettier.
 - **Shared `tsconfig`** — one strict TypeScript base.
 - **Reusable CI** — a single workflow: secret scan + typecheck + lint + tests + web build (+ advisory `npm audit`).
-- **Claude Code harness** — hooks that auto-format on edit and block edits to generated files, plus the
-  slash commands `/harness-init` and `/harness-audit`.
+- **Claude Code harness** — hooks that auto-format on edit and block edits to generated files, the
+  slash commands `/harness-init` and `/harness-audit`, plus a **harness-health loop**: a `SessionStart`
+  hook surfaces overdue maintenance (`audit`/`structure`/`cleanup`) into Claude's context so it gets done
+  proactively — with the `structure-review` + `cleanup` report-only subagents.
 - **Secret scanning** (secretlint), a **fail-fast env** pattern, and a **security baseline** checklist.
 
 ## Installation (adopt in a project)
@@ -48,6 +50,8 @@ before touching anything that already exists.
 
 4. **Claude Code harness** — copy `templates/.claude/` into the repo root, then create
    `.claude/protected-paths.json` listing your generated/build dirs (e.g. `["src/generated/", "dist/"]`).
+   For the harness-health loop also copy `templates/scripts/harness-check.mjs` + `templates/.harness/status.json`
+   (the SessionStart hook is already in the template `settings.json`). `/harness-init` does all of this.
 
 5. **Secret scan** — copy `templates/.secretlintrc.json`.
 
@@ -110,7 +114,8 @@ edits to generated/build files are blocked.
 | `packages/biome-config` | `@tecnet-systems-gmbh/biome-config` — shared Biome config (format + lint). Two presets: `/biome` (default, file-length as warning) and `/biome-strict` (file-length as error). |
 | `packages/tsconfig` | `@tecnet-systems-gmbh/tsconfig` — strict TypeScript base. |
 | `packages/eslint-config`, `packages/prettier-config` | Opt-in, for projects needing type-aware ESLint rules Biome lacks. |
-| `templates/.claude/` | Hooks (`format-on-edit`, `block-generated`) + commands (`/harness-init`, `/harness-audit`). |
+| `templates/.claude/` | Hooks (`format-on-edit`, `block-generated`) + commands (`/harness-init`, `/harness-audit`) + subagents (`structure-review`, `cleanup`). |
+| `templates/scripts/`, `templates/.harness/` | Harness-health loop: `harness-check.mjs` + `status.json` (SessionStart-surfaced overdue checks). |
 | `templates/` | `CLAUDE.md`, `gitignore`, `gitattributes` (LF), `.env.example`, `.secretlintrc.json`, `env.ts`, `SECURITY-baseline.md`, `dependabot.optin.yml` (opt-in). |
 | `.github/workflows/node-ci.yml` | The reusable CI pipeline. |
 | [`docs/plan.md`](docs/plan.md) | The full concept & rationale. |
