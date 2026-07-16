@@ -38,9 +38,21 @@ Work through these steps, confirming anything ambiguous with the user:
 ## 3. Claude Code harness
 
 - Copy `.claude/settings.json`, `.claude/hooks/format-on-edit.mjs`, `.claude/hooks/block-generated.mjs`,
-  and the `.claude/commands/` from the dev-standards templates into this repo.
+  the `.claude/commands/`, and the `.claude/agents/` (`structure-review`, `cleanup`) from the dev-standards
+  templates into this repo.
 - Create `.claude/protected-paths.json` listing **this** project's generated/build paths (e.g. Prisma output,
   codegen dirs) so the block-generated hook guards the right files.
+
+### 3b. Harness-health loop (proactive maintenance)
+
+- Copy `scripts/harness-check.mjs` and `.harness/status.json` from the templates. `status.json` seeds three
+  checks (`audit`, `structure`, `cleanup`) with cadences — tune `everyDays` per project.
+- The template `.claude/settings.json` already wires a `SessionStart` hook that runs
+  `scripts/harness-check.mjs --hook`, so overdue checks surface in Claude's context each session.
+- Add `"harness:check": "node scripts/harness-check.mjs"` to `package.json` scripts.
+- Commit `.harness/status.json` (it is shared project state); `scripts/` and `.harness/` are NOT gitignored.
+- How it runs: `audit` → `/harness-audit`; `structure`/`cleanup` → the same-named subagents. Each writes a
+  short report and stamps the ledger. See the CLAUDE.md "Harness health" section.
 
 ## 4. CLAUDE.md
 

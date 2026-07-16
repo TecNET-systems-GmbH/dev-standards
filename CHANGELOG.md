@@ -16,7 +16,10 @@ workflow and `templates/` are consumed at the `@v1` tag (a moving pointer to the
 
 - **Biome-first** format + lint (shared config), adopted **format-on-touch** (no big-bang reformat).
 - **Claude Code harness** (`templates/.claude/`): hooks `format-on-edit` + `block-generated`; slash
-  commands `/harness-init`, `/harness-audit`.
+  commands `/harness-init`, `/harness-audit`; report-only subagents `structure-review` + `cleanup`.
+- **Harness-health loop:** a `SessionStart` hook runs `scripts/harness-check.mjs`, which surfaces overdue
+  maintenance checks (`audit`/`structure`/`cleanup`, cadence in `.harness/status.json`) into Claude's
+  context so they get done proactively — tokenless, deterministic, dev-independent. `audit` → `/harness-audit`.
 - **Reusable CI** (`node-ci.yml`, public): secret scan (blocking) + typecheck + lint + tests + web build +
   `npm audit` (advisory). The backend gate is two mutually-exclusive jobs (`postgres` on/off) with
   distinct names — "Backend with DB" / "Backend without DB" — so the always-skipped twin reads clearly.

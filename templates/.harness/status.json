@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "checks": {
+    "audit": { "everyDays": 60, "lastRun": null, "note": "" },
+    "structure": { "everyDays": 90, "lastRun": null, "note": "" },
+    "cleanup": { "everyDays": 90, "lastRun": null, "note": "" }
+  }
+}

@@ -111,3 +111,9 @@ say so explicitly. If nothing new is found, say so plainly — a short "no new f
 Then ask whether to turn the "fix now" items into issues using the project's ticket template.
 **Propose the breakdown first — do not mass-create issues without approval** (avoid ticket spam). For the
 backlog items, recommend tracking (deferred issues), not building.
+
+## Harness ledger
+
+If the project uses the harness-health loop and this audit was run as the `audit` check (or you just want
+to reset its clock), stamp it: `node scripts/harness-check.mjs --record audit "<one-line verdict>"`, then
+commit `.harness/status.json`. That silences the "audit overdue" reminder until the next cadence.
