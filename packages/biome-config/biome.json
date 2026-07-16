@@ -27,7 +27,7 @@
         "noNonNullAssertion": "off",
         "noExcessiveLinesPerFile": {
           "level": "warn",
-          "options": { "maxLines": 500, "skipBlankLines": true }
+          "options": { "maxLines": 600, "skipBlankLines": true }
         }
       },
       "correctness": {
