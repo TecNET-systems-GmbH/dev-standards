@@ -1,0 +1,14 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.3/schema.json",
+  "extends": ["./biome.json"],
+  "linter": {
+    "rules": {
+      "style": {
+        "noExcessiveLinesPerFile": {
+          "level": "error",
+          "options": { "maxLines": 600, "skipBlankLines": true }
+        }
+      }
+    }
+  }
+}

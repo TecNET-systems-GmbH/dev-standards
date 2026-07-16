@@ -7,7 +7,7 @@ workflow and `templates/` are consumed at the `@v1` tag (a moving pointer to the
 
 | Package | Version | Notes |
 |---|---|---|
-| `@tecnet-systems-gmbh/biome-config` | 0.1.3 | Biome 2.5; file-length warning (`noExcessiveLinesPerFile`, 500); **policy-matched severities** (`noExplicitAny`/`noNonNullAssertion` off; noisy React/style rules → warn) so adopters see few errors. |
+| `@tecnet-systems-gmbh/biome-config` | 0.2.0 | Biome 2.5; file-length 600 (`noExcessiveLinesPerFile`; counts code lines — comments/blank lines don't count). Two presets: `/biome` (warning, gentle default) and new `/biome-strict` (file-length as **error**, for projects that ratchet). **policy-matched severities** (`noExplicitAny`/`noNonNullAssertion` off; noisy React/style rules → warn). |
 | `@tecnet-systems-gmbh/tsconfig` | 0.1.0 | Strict TS base. |
 | `@tecnet-systems-gmbh/eslint-config` | 0.1.0 | Opt-in (type-aware rules Biome lacks). |
 | `@tecnet-systems-gmbh/prettier-config` | 0.1.0 | Opt-in (pairs with ESLint). |

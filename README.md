@@ -42,6 +42,7 @@ before touching anything that already exists.
    }
    ```
    Add scripts: `"lint": "biome check --changed"`, `"format": "biome format --write"`.
+   Want file-length **enforced** (not just a warning)? Use `"extends": ["@tecnet-systems-gmbh/biome-config/biome-strict"]` and grandfather existing offenders via local `overrides` (project-specific data, stays local).
 
 3. **Types** — `tsconfig.json`: `{ "extends": "@tecnet-systems-gmbh/tsconfig/base.json", "include": ["src"] }`
 
@@ -106,7 +107,7 @@ edits to generated/build files are blocked.
 
 | Path | Purpose |
 |---|---|
-| `packages/biome-config` | `@tecnet-systems-gmbh/biome-config` — shared Biome config (format + lint). The default. |
+| `packages/biome-config` | `@tecnet-systems-gmbh/biome-config` — shared Biome config (format + lint). Two presets: `/biome` (default, file-length as warning) and `/biome-strict` (file-length as error). |
 | `packages/tsconfig` | `@tecnet-systems-gmbh/tsconfig` — strict TypeScript base. |
 | `packages/eslint-config`, `packages/prettier-config` | Opt-in, for projects needing type-aware ESLint rules Biome lacks. |
 | `templates/.claude/` | Hooks (`format-on-edit`, `block-generated`) + commands (`/harness-init`, `/harness-audit`). |
