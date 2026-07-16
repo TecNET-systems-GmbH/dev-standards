@@ -32,6 +32,12 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# packages: read lets `npm ci` install the shared @tecnet-systems-gmbh/* config packages from GitHub
+# Packages (the consuming project provides an .npmrc that reads ${NODE_AUTH_TOKEN}). Capped by the caller.
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   secret-scan:
     name: Secret scan
@@ -66,6 +72,8 @@ jobs:
           node-version: ${{ inputs.node-version }}
           cache: npm
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Audit dependencies (advisory)
         run: npm audit --audit-level=high
         continue-on-error: true
@@ -105,6 +113,8 @@ jobs:
           node-version: ${{ inputs.node-version }}
           cache: npm
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Audit dependencies (advisory)
         run: npm audit --audit-level=high
         continue-on-error: true
@@ -133,6 +143,8 @@ jobs:
           cache: npm
           cache-dependency-path: ${{ inputs.web-dir }}/package-lock.json
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npx tsc --noEmit
       - run: npx vitest run
       - run: npm run build
