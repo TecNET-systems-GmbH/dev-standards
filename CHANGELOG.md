@@ -17,6 +17,9 @@ workflow and `templates/` are consumed at the `@v1` tag (a moving pointer to the
 - **Biome-first** format + lint (shared config), adopted **format-on-touch** (no big-bang reformat).
 - **Claude Code harness** (`templates/.claude/`): hooks `format-on-edit` + `block-generated`; slash
   commands `/harness-init`, `/harness-audit`; report-only subagents `structure-review` + `cleanup`.
+  `/harness-init` is **idempotent + merge-first**: on a project that already has a (partial or ad-hoc)
+  harness it reconciles instead of clobbering — merges `settings.json` hooks, preserves
+  `.harness/status.json` clocks/cadences, and reports deviations rather than silently overwriting.
 - **Harness-health loop:** a `SessionStart` hook runs `scripts/harness-check.mjs`, which surfaces overdue
   maintenance checks (`audit`/`structure`/`cleanup`, cadence in `.harness/status.json`) into Claude's
   context so they get done proactively — tokenless, deterministic, dev-independent. `audit` → `/harness-audit`.
