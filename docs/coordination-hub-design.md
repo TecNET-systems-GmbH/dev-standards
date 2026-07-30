@@ -42,17 +42,17 @@ Das sind **zwei getrennte Bedürfnisse** (unterschiedliche Mechanismen):
 ### 3d. Reconciliation (Bedürfnis 1 — sofortiger Hebel)
 `/harness-init` wird **idempotent + merge-fähig**: einen bereits vorhandenen (ad-hoc) Harness **erkennen und angleichen** statt überschreiben (Hooks/Config/Agenten diffen, fehlende additiv ergänzen, abweichende melden statt still ersetzen). Unabhängig von 3a–c sofort nützlich, weil erst V2 den Harness nutzt.
 
-## 4. Offene Entscheidungen (Forks)
+## 4. Entscheidungen (festgelegt 2026-07-30 — Defaults bestätigt)
 
-1. **Hub liest Projekte via API (committete Metadaten) vs. Klonen (mehr Einblick).** Empfehlung: API + `profile.json` zuerst; Klonen nur, wenn ein Agent tiefer schauen muss.
-2. **Wer triggert die Hub-Agenten?** On-demand-Command zuerst (z.B. `/hub-digest`); ein `cron`/Routine später. Nicht pro Session.
-3. **Wo leben Empfehlungen?** Committete Markdown im Hub (deterministisch, diffbar, tokenfrei per Raw-Fetch) vs. GitHub-Issues (nativ, aber API-Zugriff nötig). Empfehlung: committete Markdown als Substrat, Issues optional für „echte" Tickets.
-4. **Zugriff/Token.** Hub-Agenten brauchen Org-Read (Action/Routine mit Token). Der Projekt-Rückkanal bleibt tokenfrei, wenn `dev-standards` (Raw) öffentlich lesbar ist — sonst dieselbe Token-Reibung wie beim verworfenen Packages-Pfad (siehe Northstar).
+1. **Hub liest Projekte via GitHub-API auf committete Metadaten** (`profile.json`), NICHT klonen. Klonen nur, wenn ein späterer Agent echte Tiefe braucht.
+2. **Hub-Agenten: on-demand zuerst** (z.B. `/hub-digest`), ein `cron`/Routine später, sobald der Nutzen belegt ist. Nie pro Session.
+3. **Empfehlungen als committete Markdown im Hub** (deterministisch, diffbar, tokenfrei per Raw-Fetch) — GitHub-Issues erst in Phase 3 für echte, umsetzbare Tickets.
+4. **Zugriff/Token:** Hub-Agenten brauchen Org-Read (Action/Routine mit Token). Der Projekt-Rückkanal bleibt tokenfrei, solange `dev-standards` (Raw) öffentlich lesbar ist — sonst dieselbe Token-Reibung wie beim verworfenen Packages-Pfad (siehe Northstar). **Vor Phase 2 klären.**
 
 ## 5. Phasen
 
-- **Phase 0 — Reconciliation** (`/harness-init` detect-&-merge). Klein, sofort nützlich, entkoppelt.
-- **Phase 1 — Profil + Digest.** `.harness/profile.json`-Template + ein Hub-Digest-Agent, der aus den Profilen die Übersicht baut. Belegt den Cross-Projekt-Nutzen, bevor irgendein Rückkanal verdrahtet wird.
+- **Phase 0 — Reconciliation** (`/harness-init` detect-&-merge). ✅ ERLEDIGT (dev-standards #6): idempotent + merge-first, `status.json`-Uhr wird erhalten.
+- **Phase 1 — Profil + Digest (zusammen, kein Producer ohne Consumer).** `.harness/profile.json`-Template + Wiring in `/harness-init` UND ein Hub-Digest-Agent, der aus den Profilen die Übersicht baut. Nicht das Profil allein shippen (wäre Producer ohne Consumer). Belegt den Cross-Projekt-Nutzen, bevor der Rückkanal (Phase 2) verdrahtet wird.
 - **Phase 2 — Empfehlungs-Rückkanal.** `harness-check.mjs --hook` um den Hub-Fetch + `dismissed`-Vermerk erweitern.
 - **Phase 3 — Cross-Cutting-Tickets.** Hub-Agent, der Divergenzen/Doppelarbeit in advisory Tickets gießt (knüpft an den offenen „Ticketsystem"-Block des Northstar an).
 
